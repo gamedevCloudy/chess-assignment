@@ -5,6 +5,14 @@ namespace Chess.Scripts.Core
     [System.Serializable]
     public class Piece : MonoBehaviour
     {
+       
+        public enum PieceColor
+        {
+            Black,
+            White
+        }
+
+        
         public enum PieceType
         {
             Pawn,
@@ -15,11 +23,6 @@ namespace Chess.Scripts.Core
             King
         }
 
-        public enum PieceColor
-        {
-            Black,
-            White
-        }
 
         [SerializeField] private PieceType _pieceType;
         [SerializeField] private int _cost;
