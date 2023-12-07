@@ -12,7 +12,7 @@ namespace Chess.Scripts.Core
 
 
         [SerializeField] private LayerMask _pieceLayer2D;
-        [SerializeField] private GameObject _selectedHighlight;
+        [SerializeField] private GameObject _highlighter;
 
         private void Update()
         {
@@ -52,8 +52,8 @@ namespace Chess.Scripts.Core
             }
             _isHighlighting = true;
             _highlightedPiece = piece;
-            _selectedHighlight.SetActive(true);
-            _selectedHighlight.transform.position = piece.transform.position;
+            _highlighter.SetActive(true);
+            _highlighter.transform.position = piece.transform.position;
         }
 
 
@@ -61,7 +61,7 @@ namespace Chess.Scripts.Core
         {
             _isHighlighting = false;
             _highlightedPiece = null;
-            _selectedHighlight.SetActive(false);
+            _highlighter.SetActive(false);
         }
 
 
@@ -78,14 +78,14 @@ namespace Chess.Scripts.Core
                     if (piece.GetPieceColor == Piece.PieceColor.White)
                     {
 
-                        if (ChessBoardPlacementHandler.Instance.isTileOccupied(pos.x + 1, pos.y))
+                        if (!isOccupied(pos.x + 1, pos.y))
                         {
                             ChessBoardPlacementHandler.Instance.Highlight(pos.x + 1, pos.y);
                         }
                     }
                     else
                     {
-                        if (ChessBoardPlacementHandler.Instance.isTileOccupied(pos.x - 1, pos.y))
+                        if (!isOccupied(pos.x - 1, pos.y))
                         {
                             ChessBoardPlacementHandler.Instance.Highlight(pos.x - 1, pos.y);
                         }
@@ -125,21 +125,21 @@ namespace Chess.Scripts.Core
             //right
             for (int i = pos.x + 1; i < 8; i++)
             {
-                bool check = ChessBoardPlacementHandler.Instance.isTileOccupied(i, pos.y);
+                bool check = isOccupied(i, pos.y);
                 if(check) break; 
                 ChessBoardPlacementHandler.Instance.Highlight(i, pos.y);
             }
             //left
             for (int i = pos.x - 1; i >= 0; i--)
             {
-                bool check = ChessBoardPlacementHandler.Instance.isTileOccupied(i, pos.y);
+                bool check = isOccupied(i, pos.y);
                 if(check) break; 
                 ChessBoardPlacementHandler.Instance.Highlight(i, pos.y);
             }
             //up
             for (int i = pos.y + 1; i < 8; i++)
             {
-                bool check = ChessBoardPlacementHandler.Instance.isTileOccupied(pos.x, i);
+                bool check = isOccupied(pos.x, i);
                 if(check) break; 
                 ChessBoardPlacementHandler.Instance.Highlight(pos.x, i);
 
@@ -147,62 +147,38 @@ namespace Chess.Scripts.Core
             //down
             for (int i = pos.y - 1; i >= 0; i--)
             {
-                bool check = ChessBoardPlacementHandler.Instance.isTileOccupied(pos.x, i);
+                bool check = isOccupied(pos.x, i);
                 if(check) break; 
                 ChessBoardPlacementHandler.Instance.Highlight(pos.x, i);
             }
 
         }
-        private void GetDiagonalMovement(Vector2Int pos){
-            // //right
-            int j = pos.y+1; 
-            int k = pos.y-1; 
+        
+        private void GetDiagonalMovement(Vector2Int pos)
+        {
+            // Loop through both directions of the diagonal movement
+            for (int direction = -1; direction <= 1; direction += 2)
+            {
+                int yOffset = pos.y + direction;
+                for (int xOffset = 1; xOffset < 8; xOffset++)
+                {
+                    int x = pos.x + xOffset * direction;
+                    int y = yOffset;
 
-            for (int i = pos.x + 1; i < 8; i++)
-            {   
-                if(j <=7)
-                {
-                    bool check = ChessBoardPlacementHandler.Instance.isTileOccupied(i, j); 
-                    if(check) break; 
-                    ChessBoardPlacementHandler.Instance.Highlight(i,j); 
-                }      
-                j+=1; 
-            }
-            for (int i = pos.x + 1; i < 8; i++)
-            {   
-                if(k >=0)
-                {
-                    bool check = ChessBoardPlacementHandler.Instance.isTileOccupied(i, k); 
-                    if(check) break; 
-                    ChessBoardPlacementHandler.Instance.Highlight(i,k); 
-                }      
-                k-=1; 
-            }
+                    // Check if the square is within the board and not occupied
+                    if (IsWithinBoard(x, y) && !isOccupied(x, y))
+                    {
+                        ChessBoardPlacementHandler.Instance.Highlight(x, y);
+                    }
+                    else
+                    {
+                        break;
+                    }
 
-            j = pos.y+1; 
-            for (int i = pos.x - 1; i >= 0; i--)
-            {   
-                if(j <=7)
-                {
-                    bool check = ChessBoardPlacementHandler.Instance.isTileOccupied(i, j); 
-                    if(check) break; 
-                    ChessBoardPlacementHandler.Instance.Highlight(i,j); 
-                }      
-                j+=1; 
+                    // Update yOffset for next iteration
+                    yOffset += direction;
+                }
             }
-
-            k = pos.y-1; 
-            for (int i = pos.x - 1; i >= 0; i--)
-            {   
-                if(k >=0)
-                {
-                    bool check = ChessBoardPlacementHandler.Instance.isTileOccupied(i, k); 
-                    if(check) break; 
-                    ChessBoardPlacementHandler.Instance.Highlight(i,k); 
-                }      
-                k-=1; 
-            }
-            
         }
     
         private bool IsWithinBoard(int x, int y)
@@ -220,7 +196,7 @@ namespace Chess.Scripts.Core
                 int x = pos.x + xOffsets[i];
                 int y = pos.y + yOffsets[i];
 
-                if (IsWithinBoard(x, y) && !ChessBoardPlacementHandler.Instance.isTileOccupied(x, y))
+                if (IsWithinBoard(x, y) && !isOccupied(x, y))
                 {
                     ChessBoardPlacementHandler.Instance.Highlight(x, y);
                 }
@@ -237,28 +213,16 @@ namespace Chess.Scripts.Core
                 int x = pos.x + xOffsets[i];
                 int y = pos.y + yOffsets[i];
 
-                if (IsWithinBoard(x, y) && !ChessBoardPlacementHandler.Instance.isTileOccupied(x, y))
+                if (IsWithinBoard(x, y) && !isOccupied(x, y))
                 {
                     ChessBoardPlacementHandler.Instance.Highlight(x, y);
                 }
             }
         }
 
-
-
-        private bool isValidMove(int row, int column)
+        private bool isOccupied(int row, int column)
         {
-            // Implement logic to check if the move is valid
-            // based on game rules and board state
-            // ...
-            if (row < 0 || row >= 8) return false;
-            if (column < 0 || column >= 8) return false;
-
-            GameObject g = ChessBoardPlacementHandler.Instance.GetTile(row, column);
-            if (g == null) return false;
-            // if(g.transform.GetChild(0) != null) return false; 
-            // Replace the following with your actual check
-            return true;
+            return ChessBoardPlacementHandler.Instance.isTileOccupied(row, column); 
         }
     }
 }
