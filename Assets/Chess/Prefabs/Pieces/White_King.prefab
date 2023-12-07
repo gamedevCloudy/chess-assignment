@@ -96,9 +96,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8185be987243942d5a1b1ffe61085d62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pieceType: 2
+  _pieceType: 5
   _cost: 200
-  _color: 0
+  _color: 1
+  _tilePos: {x: 0, y: 0}
 --- !u!61 &6490061837340170421
 BoxCollider2D:
   m_ObjectHideFlags: 0

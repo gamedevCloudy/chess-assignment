@@ -98,7 +98,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _pieceType: 1
   _cost: 7
-  _color: 0
+  _color: 1
+  _tilePos: {x: 0, y: 0}
 --- !u!61 &-3919772802716264402
 BoxCollider2D:
   m_ObjectHideFlags: 0

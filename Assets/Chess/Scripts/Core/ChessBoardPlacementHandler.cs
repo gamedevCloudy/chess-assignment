@@ -9,6 +9,8 @@ public sealed class ChessBoardPlacementHandler : MonoBehaviour {
     [SerializeField] private GameObject _highlightPrefab;
     private GameObject[,] _chessBoard;
 
+    private bool[,] _occupiedTiles = new bool[8, 8];
+
     internal static ChessBoardPlacementHandler Instance;
 
     private void Awake() {
@@ -34,6 +36,20 @@ public sealed class ChessBoardPlacementHandler : MonoBehaviour {
         }
     }
 
+    internal int[] GetRowCol(GameObject tile)
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                if (tile == _chessBoard[i,j])
+                {
+                    return new int[] { i, j }; // Return the row and column as an array
+                }
+            }
+        }
+        return null; // Return null if the tile is not found
+    }
     internal void Highlight(int row, int col) {
         var tile = GetTile(row, col).transform;
         if (tile == null) {
@@ -57,6 +73,14 @@ public sealed class ChessBoardPlacementHandler : MonoBehaviour {
     }
 
 
+    internal bool isTileOccupied(int row, int column){
+        return _occupiedTiles[row,column]; 
+    }
+
+    internal void SetOccupied(int i, int j)
+    {
+        _occupiedTiles[i,j] = true; 
+    }
     #region Highlight Testing
 
     // private void Start() {
