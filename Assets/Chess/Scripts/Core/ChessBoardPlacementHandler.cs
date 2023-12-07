@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 using System.Diagnostics.CodeAnalysis;
-
+using Chess.Scripts.Core; 
 
 [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
 public sealed class ChessBoardPlacementHandler : MonoBehaviour {
@@ -36,6 +36,41 @@ public sealed class ChessBoardPlacementHandler : MonoBehaviour {
         }
     }
 
+   internal Piece GetPieceAt(int row, int column)
+
+    {
+        try
+        {
+            // Convert row and column to world position
+            Vector3 worldPosition = new Vector3(row, 0, column);
+
+            // Perform a 3D overlap sphere check with a small radius
+            Collider[] hitColliders = Physics.OverlapSphere(worldPosition, 0.1f, 9);
+
+            // Check if any pieces were found within the sphere
+            foreach (Collider collider in hitColliders)
+            {
+                // Get the Piece component from the collider
+                Piece piece = collider.GetComponent<Piece>();
+
+                if (piece != null)
+                {
+                    return piece;
+                }
+            }
+
+            // Return null if no piece was found
+            return null;
+        }
+        catch (Exception)
+        {
+            Debug.LogError("Invalid row or column.");
+            return null;
+        }
+    }
+
+
+
     internal int[] GetRowCol(GameObject tile)
     {
         for (int i = 0; i < 8; i++)
@@ -50,6 +85,8 @@ public sealed class ChessBoardPlacementHandler : MonoBehaviour {
         }
         return null; // Return null if the tile is not found
     }
+
+
     internal void Highlight(int row, int col) {
         var tile = GetTile(row, col).transform;
         if (tile == null) {
@@ -73,7 +110,7 @@ public sealed class ChessBoardPlacementHandler : MonoBehaviour {
     }
 
 
-    internal bool isTileOccupied(int row, int column){
+    internal bool IsTileOccupied(int row, int column){
         return _occupiedTiles[row,column]; 
     }
 

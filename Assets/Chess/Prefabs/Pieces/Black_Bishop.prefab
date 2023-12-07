@@ -27,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8829717530896101052}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.15193677, y: -3.288918, z: 0.43933135}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -99,6 +99,7 @@ MonoBehaviour:
   _pieceType: 1
   _cost: 7
   _color: 0
+  _tilePos: {x: 0, y: 0}
 --- !u!61 &-4749288802209142261
 BoxCollider2D:
   m_ObjectHideFlags: 0

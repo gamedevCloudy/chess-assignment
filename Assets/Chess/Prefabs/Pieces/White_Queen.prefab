@@ -99,6 +99,7 @@ MonoBehaviour:
   _pieceType: 4
   _cost: 9
   _color: 1
+  _tilePos: {x: 0, y: 0}
 --- !u!61 &9077591632224583854
 BoxCollider2D:
   m_ObjectHideFlags: 0
